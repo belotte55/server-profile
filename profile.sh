@@ -172,7 +172,8 @@ alias mpp='cd "$MPP_BO_PATH"'
 alias watcher='cd "$WATCHER_PATH"'
 
 if command -v nvim >/dev/null 2>&1; then alias vim='nvim'; fi
-alias vi='vim'
+alias vi='nvim'
+alias ls='ls --color'
 alias src="source ~/.${_fp_shell}rc"
 alias monitor='nload'
 alias grep='grep --color=auto'
