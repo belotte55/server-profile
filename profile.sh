@@ -216,6 +216,36 @@ listMpp()   { _fp_pm2_names mpp-; }
 reloadMpg() { _fp_pm2_reload mpg-; }
 reloadMpp() { _fp_pm2_reload mpp-; }
 
+# Autocomplétion pm2 (commandes, puis noms d'apps) : c'est pm2 qui fournit les
+# propositions (`pm2 completion -- …`), node ne tourne qu'au moment du Tab.
+if [ "$_fp_shell" = zsh ]; then
+  if (( $+functions[compdef] )); then
+    _fp_pm2_complete() {
+      local -a opts
+      opts=(${(f)"$(COMP_CWORD=$((CURRENT - 1)) COMP_LINE=$BUFFER COMP_POINT=$CURSOR \
+        pm2 completion -- "${words[@]}" 2>/dev/null)"})
+      if (( ${#opts} )); then compadd -a opts; else _files; fi
+    }
+    compdef _fp_pm2_complete pm2
+  else # compinit pas chargé : ancien système compctl
+    _fp_pm2_complete() {
+      local -a words; local cword line point
+      read -Ac words; read -cn cword; read -l line; read -ln point
+      reply=(${(f)"$(COMP_CWORD=$((cword - 1)) COMP_LINE=$line COMP_POINT=$point \
+        pm2 completion -- "${words[@]}" 2>/dev/null)"})
+    }
+    compctl -K _fp_pm2_complete + -f pm2
+  fi
+else
+  _fp_pm2_complete() {
+    local IFS=$'\n'
+    # shellcheck disable=SC2207
+    COMPREPLY=($(COMP_CWORD=$COMP_CWORD COMP_LINE=$COMP_LINE COMP_POINT=$COMP_POINT \
+      pm2 completion -- "${COMP_WORDS[@]}" 2>/dev/null))
+  }
+  complete -o default -F _fp_pm2_complete pm2
+fi
+
 # Chaînes aléatoires.
 # Usage : rand [longueur=32] [caractères=a-zA-Z0-9] [nombre=1]
 #         rand [longueur=32] [nombre]

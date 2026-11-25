@@ -22,6 +22,18 @@ L'installeur :
 
 Il peut être relancé autant de fois que nécessaire. Depuis un serveur déjà équipé, `fp_update` fait la mise à jour.
 
+## Migrations
+
+Le dossier [migrations](migrations) contient de petits scripts à lancer une fois sur les serveurs déjà équipés, quand un changement demande plus qu'un `fp_update`. Ils peuvent être relancés sans risque.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/belotte55/server-profile/main/migrations/001-pm2-completion.sh | sh
+```
+
+| Migration | Rôle |
+|---|---|
+| `001-pm2-completion.sh` | met le profil à jour pour avoir l'autocomplétion pm2 et retire les anciens blocs `pm2 completion` de `~/.bashrc` / `~/.zshrc` |
+
 ## Config par serveur
 
 Tout ce qui est propre à un serveur ou secret va dans `~/.frank_profile.local`, jamais dans ce dépôt. Voir [local.example.sh](local.example.sh).
@@ -36,6 +48,7 @@ Le profil ne s'applique que si `LOGGED_USER=frank` (compte `ubuntu` partagé). S
 |---|---|
 | `bo`, `mpm`, `mpp`, `watcher`, `ftp` | aller dans le dossier du projet |
 | `listMpg`, `listMpp`, `reloadMpg`, `reloadMpp` | apps PM2 `mpg-*` / `mpp-*` |
+| `pm2 <Tab>` | autocomplétion des commandes pm2 et des noms d'apps |
 | `getAgeOf <PID\|motif> [--kill]` | âge des processus node |
 | `findPidWith <motif>`, `killPidWith <motif>` | chercher / tuer (confirmation s'il y en a plusieurs) |
 | `rm …` | déplace dans `/tmp/trash.XXXXXX` (vrai rm : `rrm`) |
